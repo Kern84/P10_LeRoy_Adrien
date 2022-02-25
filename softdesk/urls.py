@@ -16,8 +16,23 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from issuetracking.views import (
+    UsersViewSet,
+    ContributorsViewSet,
+    ProjectsViewSet,
+    IssuesViewSet,
+    CommentsViewSet,
+)
+
+router = routers.SimpleRouter()
+router.register("users", UsersViewSet, basename="users")
+router.register("contributors", ContributorsViewSet, basename="contributors")
+router.register("projects", ProjectsViewSet, basename="projects")
+router.register("issues", IssuesViewSet, basename="issues")
+router.register("comments", CommentsViewSet, basename="comments")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
+    path("api/", include(router.urls)),
 ]
