@@ -20,20 +20,14 @@ class Contributors(models.Model):
         "issuetracking.Users",
         on_delete=models.CASCADE,
         related_name="users",
-        blank=True,
-        null=True,
     )
     project_id = models.ForeignKey(
         "issuetracking.Projects",
         on_delete=models.CASCADE,
         related_name="projects",
-        blank=True,
-        null=True,
     )
-    permission = models.CharField(
-        max_length=50, choices=PERMISSION_CHOICES, blank=True, null=True
-    )
-    role = models.CharField(max_length=50, blank=True, null=True)
+    permission = models.CharField(max_length=50, choices=PERMISSION_CHOICES)
+    role = models.CharField(max_length=50)
 
 
 class Projects(models.Model):
@@ -46,15 +40,13 @@ class Projects(models.Model):
     ]
 
     project_id = models.IntegerField()
-    title = models.CharField(max_length=50, blank=True, null=True, unique=True)
-    description = models.CharField(max_length=500, blank=True, null=True)
-    type = models.CharField(max_length=50, choices=TYPE_CHOICES, blank=True, null=True)
+    title = models.CharField(max_length=50, unique=True)
+    description = models.CharField(max_length=500)
+    type = models.CharField(max_length=50, choices=TYPE_CHOICES)
     author_user_id = models.ForeignKey(
         "issuetracking.Users",
         on_delete=models.CASCADE,
         related_name="projects",
-        blank=True,
-        null=True,
     )
 
 
@@ -74,35 +66,26 @@ class Issues(models.Model):
         ("DONE", "Done"),
     ]
 
-    title = models.CharField(max_length=50, blank=True, null=True)
-    desc = models.CharField(max_length=500, blank=True, null=True)
-    tag = models.CharField(max_length=50, choices=TAG_CHOICES, blank=True, null=True)
-    priority = models.CharField(
-        max_length=50, choices=PRIORITY_CHOICES, blank=True, null=True
-    )
+    title = models.CharField(max_length=50)
+    desc = models.CharField(max_length=500)
+    tag = models.CharField(max_length=50, choices=TAG_CHOICES)
+    priority = models.CharField(max_length=50, choices=PRIORITY_CHOICES)
     project_id = models.ForeignKey(
         "issuetracking.Projects",
         on_delete=models.CASCADE,
         related_name="issues",
-        blank=True,
-        null=True,
     )
-    status = models.CharField(
-        max_length=50, choices=STATUS_CHOICES, blank=True, null=True
-    )
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES)
     author_user_id = models.ForeignKey(
         "issuetracking.Users",
         on_delete=models.CASCADE,
         related_name="created_issues",
-        blank=True,
-        null=True,
     )
     assignee_user_id = models.ForeignKey(
         "issuetracking.Users",
         default=author_user_id,
         on_delete=models.SET_NULL,
         related_name="assigned_issues",
-        blank=True,
         null=True,
     )
     created_time = models.DateTimeField(auto_now_add=True)
@@ -110,19 +93,15 @@ class Issues(models.Model):
 
 class Comments(models.Model):
     comment_id = models.IntegerField()
-    description = models.CharField(max_length=500, blank=True, null=True)
+    description = models.CharField(max_length=500)
     author_user_id = models.ForeignKey(
         "issuetracking.Users",
         on_delete=models.CASCADE,
         related_name="comments",
-        blank=True,
-        null=True,
     )
     issue_id = models.ForeignKey(
         "issuetracking.Issues",
         on_delete=models.CASCADE,
         related_name="comments",
-        blank=True,
-        null=True,
     )
     created_time = models.DateTimeField(auto_now_add=True)
