@@ -22,7 +22,9 @@ from issuetracking.views import (
     ProjectsViewSet,
     IssuesViewSet,
     CommentsViewSet,
+    registration_view,
 )
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 router = routers.SimpleRouter()
 router.register("users", UsersViewSet, basename="users")
@@ -35,4 +37,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
     path("api/", include(router.urls)),
+    path("api/token/", TokenObtainPairView.as_view(), name="obtain_token"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="refresh_token"),
+    path("api/signup/", registration_view, name="signup"),
 ]
