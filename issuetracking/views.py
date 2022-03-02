@@ -8,9 +8,9 @@ from issuetracking.serializers import (
     LoginSerializer,
 )
 from issuetracking.models import Users, Contributors, Projects, Issues, Comments
-from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from issuetracking.permissions import IsProjectAuthor
 
 
 class UsersViewSet(ModelViewSet):
@@ -29,6 +29,7 @@ class ContributorsViewSet(ModelViewSet):
 
 class ProjectsViewSet(ModelViewSet):
     serializer_class = ProjectsSerializer
+    # permission_classes = [IsProjectAuthor]
 
     def get_queryset(self):
         author = self.request.GET.get("author_user_id")
@@ -51,11 +52,7 @@ class CommentsViewSet(ModelViewSet):
         return Comments.objects.all()
 
 
-@api_view(
-    [
-        "POST",
-    ]
-)
+@api_view(["POST"])
 def registration_view(request):
     if request.method == "POST":
         serializer = LoginSerializer(data=request.data)
