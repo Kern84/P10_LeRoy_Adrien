@@ -15,21 +15,20 @@ class ContributorsSerializer(ModelSerializer):
         fields = ["user_id", "project_id", "permission", "role"]
 
 
-class CommentsSerializer(ModelSerializer):
+class ProjectsSerializer(ModelSerializer):
     class Meta:
-        model = Comments
+        model = Projects
         fields = [
             "id",
+            "title",
             "description",
+            "type",
             "author_user_id",
-            "issue_id",
+            "contributor",
         ]
 
 
 class IssuesSerializer(ModelSerializer):
-
-    comments = CommentsSerializer(many=True)
-
     class Meta:
         model = Issues
         fields = [
@@ -42,24 +41,17 @@ class IssuesSerializer(ModelSerializer):
             "status",
             "author_user_id",
             "assignee_user_id",
-            "comments",
         ]
 
 
-class ProjectsSerializer(ModelSerializer):
-
-    issues = IssuesSerializer(many=True)
-
+class CommentsSerializer(ModelSerializer):
     class Meta:
-        model = Projects
+        model = Comments
         fields = [
             "id",
-            "title",
             "description",
-            "type",
             "author_user_id",
-            "contributor",
-            "issues",
+            "issue_id",
         ]
 
 

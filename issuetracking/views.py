@@ -10,7 +10,8 @@ from issuetracking.serializers import (
 from issuetracking.models import Users, Contributors, Projects, Issues, Comments
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from issuetracking.permissions import IsProjectAuthor
+from issuetracking.permissions import IsProjectAuthor, IsProjectContributor
+from rest_framework.permissions import IsAuthenticated
 
 
 class UsersViewSet(ModelViewSet):
@@ -29,27 +30,47 @@ class ContributorsViewSet(ModelViewSet):
 
 class ProjectsViewSet(ModelViewSet):
     serializer_class = ProjectsSerializer
-    # permission_classes = [IsProjectAuthor]
+
+    def get_permissions(self):
+        permission_classes = [IsAuthenticated()]
+
+        if self.request.method == "GET":
+            permission_classes = [
+                IsAuthenticated(),
+                IsProjectAuthor(),
+                IsProjectContributor(),
+            ]
+        elif self.request.method == "DELETE" or self.request.method == "PUT":
+            permission_classes = [
+                IsAuthenticated(),
+                IsProjectAuthor(),
+            ]
+
+        return permission_classes
 
     def get_queryset(self):
-        author = self.request.GET.get("author_user_id")
-        queryset = Projects.objects.filter(author_user_id=author)
-        return Projects.objects.all()
-        # return queryset
+        user = self.request.user.id
+        return Projects.objects.filter(author_user_id=user) | Projects.objects.filter(
+            contributor=user
+        )
 
 
 class IssuesViewSet(ModelViewSet):
     serializer_class = IssuesSerializer
 
     def get_queryset(self):
-        return Issues.objects.all()
+        user = self.request.user.id
+        return Issues.objects.filter(author_user_id=user) | Issues.objects.filter(
+            assignee_user_id=user
+        )
 
 
 class CommentsViewSet(ModelViewSet):
     serializer_class = CommentsSerializer
 
     def get_queryset(self):
-        return Comments.objects.all()
+        user = self.request.user.id
+        return Comments.objects.filter(author_user_id=user)
 
 
 @api_view(["POST"])
