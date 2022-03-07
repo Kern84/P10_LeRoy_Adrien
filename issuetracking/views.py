@@ -10,12 +10,19 @@ from issuetracking.serializers import (
 from issuetracking.models import Users, Contributors, Projects, Issues, Comments
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from issuetracking.permissions import IsProjectAuthor, IsProjectContributor
+from issuetracking.permissions import (
+    IsProjectAuthor,
+    IsProjectContributor,
+    IsIssueAuthor,
+    IsIssueAssignee,
+    IsCommentAuthor,
+)
 from rest_framework.permissions import IsAuthenticated
 
 
 class UsersViewSet(ModelViewSet):
     serializer_class = UsersSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Users.objects.all()
@@ -23,6 +30,7 @@ class UsersViewSet(ModelViewSet):
 
 class ContributorsViewSet(ModelViewSet):
     serializer_class = ContributorsSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Contributors.objects.all()
@@ -36,15 +44,10 @@ class ProjectsViewSet(ModelViewSet):
 
         if self.request.method == "GET":
             permission_classes = [
-                IsAuthenticated(),
-                IsProjectAuthor(),
-                IsProjectContributor(),
+                IsAuthenticated() and (IsProjectAuthor() or IsProjectContributor())
             ]
         elif self.request.method == "DELETE" or self.request.method == "PUT":
-            permission_classes = [
-                IsAuthenticated(),
-                IsProjectAuthor(),
-            ]
+            permission_classes = [IsAuthenticated() and IsProjectAuthor()]
 
         return permission_classes
 
@@ -58,15 +61,51 @@ class ProjectsViewSet(ModelViewSet):
 class IssuesViewSet(ModelViewSet):
     serializer_class = IssuesSerializer
 
+    def get_permissions(self):
+        permission_classes = [IsAuthenticated()]
+
+        if self.request.method == "GET":
+            permission_classes = [
+                IsAuthenticated()
+                and (
+                    IsIssueAuthor()
+                    or IsIssueAssignee()
+                    or IsProjectAuthor()
+                    or IsProjectContributor()
+                )
+            ]
+        elif self.request.method == "DELETE" or self.request.method == "PUT":
+            permission_classes = [IsAuthenticated() and IsIssueAuthor()]
+        elif self.request.method == "POST":
+            permission_classes = [
+                IsAuthenticated() and (IsProjectAuthor() or IsProjectContributor())
+            ]
+
+        return permission_classes
+
     def get_queryset(self):
-        user = self.request.user.id
-        return Issues.objects.filter(author_user_id=user) | Issues.objects.filter(
-            assignee_user_id=user
-        )
+        return Issues.objects.filter(project_id=self.kwargs["project_pk"])
 
 
 class CommentsViewSet(ModelViewSet):
     serializer_class = CommentsSerializer
+
+    def get_permissions(self):
+        permission_classes = [IsAuthenticated()]
+
+        if self.request.method == "GET":
+            permission_classes = [
+                IsAuthenticated()
+                and (IsCommentAuthor() or IsProjectAuthor() or IsProjectContributor())
+            ]
+        elif self.request.method == "DELETE" or self.request.method == "PUT":
+            permission_classes = [IsAuthenticated() and IsCommentAuthor()]
+        elif self.request.method == "POST":
+            permission_classes = [
+                IsAuthenticated() and (IsProjectAuthor() or IsProjectContributor())
+            ]
+
+        return permission_classes
 
     def get_queryset(self):
         user = self.request.user.id
