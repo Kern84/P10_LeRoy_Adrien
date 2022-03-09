@@ -1,4 +1,5 @@
 [![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/generator/?plabel=OpenClassrooms&slabel=Project+10&pbg=%237447E5&sbg=%23A578FF)](https://forthebadge.com)
 
 # Project 10
 
@@ -50,6 +51,9 @@ deactivate
 
 This project has already three users created with different permissions.
 
-- User 1 : superuser; email: adrien@email.fr; mot de passe: S3cret!1; first_name: adrien ; last_name: le roy. [Project creator, contributor]
-- user 2 : email: lebron@email.fr; mot de passe: S3cret!2; first_name: Lebron; last_name: James. [Project contributor]
-- user 3 : email: jordan@email.fr; mot de passe: S3cret!3; first_name: Michael; last_name: Jordan. [No Projects]
+- User 1 : superuser; email: adrien@email.fr; mot de passe: S3cret!1; first_name: adrien ; last_name: le roy. 
+[Project creator, contributor]
+- User 2 : email: lebron@email.fr; mot de passe: S3cret!2; first_name: Lebron; last_name: James. 
+[Project contributor]
+- User 3 : email: jordan@email.fr; mot de passe: S3cret!3; first_name: Michael; last_name: Jordan. 
+[No Projects]
