@@ -93,7 +93,9 @@ class Projects(models.Model):
         related_name="projects",
     )
     contributor = models.ManyToManyField(
-        to=settings.AUTH_USER_MODEL, through="Contributors", related_name="contributor"
+        to=settings.AUTH_USER_MODEL,
+        through="Contributors",
+        related_name="contributor",
     )
 
     def __str__(self):

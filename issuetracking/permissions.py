@@ -28,10 +28,7 @@ class IsProjectContributor(BasePermission):
             except KeyError:
                 project_id = int(request.resolver_match.kwargs["pk"])
             project = Contributors.objects.get(project_id=project_id)
-            project_author = Projects.objects.get(pk=project_id)
             if project.user_id.id == user_id:
-                return True
-            elif project_author.author_user_id.id == user_id:
                 return True
             else:
                 return False
