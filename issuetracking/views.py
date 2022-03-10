@@ -32,6 +32,7 @@ class UsersViewSet(ModelViewSet):
 class ContributorsViewSet(ModelViewSet):
     serializer_class = ContributorsSerializer
     permission_classes = [
+        IsProjectAuthor,
         IsAuthenticated,
     ]
 

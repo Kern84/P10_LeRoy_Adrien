@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from issuetracking.models import Projects, Issues, Comments, Contributors
+from issuetracking.models import Projects, Issues, Comments
 
 
 class IsProjectAuthor(BasePermission):
@@ -27,8 +27,9 @@ class IsProjectContributor(BasePermission):
                 project_id = int(request.resolver_match.kwargs["project_pk"])
             except KeyError:
                 project_id = int(request.resolver_match.kwargs["pk"])
-            project = Contributors.objects.get(project_id=project_id)
-            if project.user_id.id == user_id:
+            project = Projects.objects.get(id=project_id)
+            contributor = project.contributor.get(id=user_id)
+            if contributor.id == user_id:
                 return True
             else:
                 return False
