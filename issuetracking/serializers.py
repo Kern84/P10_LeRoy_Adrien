@@ -1,7 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from issuetracking.models import Users, Contributors, Projects, Issues, Comments
-from django.db import transaction
 
 
 class UsersSerializer(ModelSerializer):
@@ -27,19 +26,6 @@ class ProjectsSerializer(ModelSerializer):
             "author_user_id",
             "contributor",
         ]
-
-    def create(self, validated_data):
-        """Create automatically a contributor when a project is created."""
-        with transaction.atomic():
-            project_instance = super().create(validated_data)
-            contributor = Contributors.objects.create(
-                project_id=project_instance,
-                user_id=self.context["request"].user,
-                permission="AUTHOR",
-                role="AUTHOR",
-            )
-            contributor.save()
-            return project_instance
 
 
 class IssuesSerializer(ModelSerializer):

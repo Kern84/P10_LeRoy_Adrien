@@ -1,4 +1,3 @@
-import re
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
@@ -36,6 +35,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class Users(AbstractUser):
+    """Class for the user information."""
 
     username = None
     first_name = models.CharField(max_length=50, blank=True)
@@ -52,6 +52,7 @@ class Users(AbstractUser):
 
 
 class Contributors(models.Model):
+    """Class for the contributor information."""
 
     PERMISSION_CHOICES = [
         ("AUTHOR", "Author"),
@@ -76,6 +77,7 @@ class Contributors(models.Model):
 
 
 class Projects(models.Model):
+    """Class for the project information."""
 
     TYPE_CHOICES = [
         ("BACK-END", "Back-End"),
@@ -103,6 +105,7 @@ class Projects(models.Model):
 
 
 class Issues(models.Model):
+    """Class for the issue information."""
 
     TAG_CHOICES = [("BUG", "Bug"), ("IMPROVEMENT", "Improvement"), ("TASK", "Task")]
 
@@ -150,6 +153,8 @@ class Issues(models.Model):
 
 
 class Comments(models.Model):
+    """Class for the comment information."""
+
     description = models.CharField(max_length=500)
     author_user_id = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
